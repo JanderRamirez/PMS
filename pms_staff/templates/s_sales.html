@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load mathfilters %}
+{% block content%}
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3><i class="fa fa-shopping-cart"></i> Order</h3>
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="row">
+        <div class="col-md-12 col-sm-12  ">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Order Information</h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              
+              <form id="addCart_form" data-parsley-validate class="form-horizontal form-label-right">
+                {% csrf_token %}
+                <div class="col-md-4 col-sm-4">
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 " >Order Number <span class="required">*</span>
+              </label>
+              <div class="col-md-4 col-sm-4 ">
+                <input type="text" required="required" class="form-control" name="sales_id" value = "{{ sales_no }}"placeholder="ORD-101-21" readonly>
+              </div>
+            </div>
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3" >Payment Type <span class="required">*</span>
+              </label>
+              <div class="col-md-4 col-sm-4 ">
+                <input type="text" required="required" class="form-control" placeholder="Cash" readonly style="border:none">
+              </div>
+            </div>
+              </div>
+              <div class="col-md-8 col-sm-8">
+                <div class="item form-group pt-2 mb-0">
+                    <div class="col-4"><label for="">Medicine Name</label></div>
+                    <div class="col-2"><label for="">Quantity</label></div>
+                    <div class="col-2"><label for="">Unit Price</label></div>
+                    <div class="col-2"><label for="">Total Price</label></div>
+                </div>
+                <div class="item form-group ">
+                    <div class="col-4"><input type="hidden" required="required" class="form-control" name = "med_id" id = "medid">
+                        <input type="text" id="med_name" class="form-control" list="meds" placeholder="Select Medicine" />
+                            <datalist id="meds">
+                            {% for med in meds %}
+                            <option>{{ med.name }}</option>
+                            {% endfor %}
+                            </datalist>
+                    </div>
+                    <div class="col-2"><input type="text" required="required" class="form-control" name = "quantity" id = "quantity"  value = "1" placeholder="Enter Qty"></div>
+                    <div class="col-2"><input type="text" required="required" class="form-control" name = "u_price" id = "u_price" placeholder="Unit Price" readonly></div>
+                    <div class="col-2"><input type="text" required="required" class="form-control" name = "t_price" id = "t_price" placeholder="Total Price" readonly></div>
+                    
+                    <div class="col-2"><button type="submit" class="btn btn-sm btn-success text-white "><i class="fa fa-plus"></i> Add </button></div>
+                </div>
+                <div class="item form-group col-4">
+                </div>
+              </div>
+            </form>
+              <div class="col-md-12 col-sm-12 ">
+              <table class="table table-bordered" style="width:100%">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price <span class="required">(Php)</span></th>
+                    <th>Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.price }}</td>
+                        <td>{{ product.total }}</td>
+                        <td><center><button class="btn btn-sm btn-danger text-white btndelete" data-id="{{ product.id }}"><i class="fa fa-trash"></i> delete</button></center></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              <ul class="nav navbar-right panel_toolbox">
+              <!-- <a href="#" class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a> -->
+              </ul>
+              <ul class="nav navbar-left panel_toolbox">
+              <!-- <a href="#" class="btn btn-sm btn-success text-white"><i class="fa fa-plus"></i> Add More</a> -->
+              </ul><br><br><br>
+              </div>
+              <div class="col-md-3 col-sm-3  profile_left">
+              </div>
+              <div class="col-md-9 col-sm-9  profile_left">
+              <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 label-align" >Grand Total <span class="required">(Php)</span>
+              </label>
+              <div class="col-md-8 col-sm-8 ">
+                <input type="text" required="required" class="form-control total" placeholder="0.00" value="{{total}}" readonly style="border:none">
+              </div>
+            </div>
+            <div class="form-group">
+                  <div class="col-md-9 col-sm-9  offset-md-3">
+                    <button type="button" class="btn btn-success" data-id="{{ sales_no }}" id = "btn_submit">Submit Order</button>
+                  </div>
+                </div>
+            </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+
+
+
+    $('#med_name').keypress(function (e) {
+
+ var key = e.which;
+ if(key == 13)  // the enter key code
+  {
+    e.preventDefault();
+    start_loader();
+    if($(this).val()==""){
+        alert_toast("Medicine name can't be empty",'error', 'top');
+        end_loader();
+        return;
+    }
+    if( parseInt($("#quantity").val())<1){
+        alert_toast("Quantity should not be less than 1",'error', 'top');
+        end_loader();
+        return;
+    }
+    $.ajax({
+    url:"get_detail/" +  $(this).val(),
+    type: 'GET',
+    dataType: 'json',
+    success:function(resp){
+        if(resp.msg == "success"){
+            $("#u_price").val(resp.price);
+            $("#medid").val(resp.id);
+            $("#t_price").val((resp.price * $("#quantity").val()).toFixed(2));
+            console.log(resp.id)
+            end_loader();
+        }
+        else{
+            alert_toast(resp.msg,'error', 'top');
+            end_loader();
+        }
+    
+    },
+    error:function(resp){
+        console.log(resp.responseText);
+        alert_toast("Something went wrong",'error', 'top');
+        end_loader();
+    }
+})
+  }
+});  
+
+
+$(".btndelete").click(function(){
+    start_loader();
+    var btn = $(this);
+    $.ajax({
+    url:"delete_sale/" +  $(this).attr('data-id'),
+    type: 'GET',
+    dataType: 'json',
+    success:function(resp){
+        if(resp.msg == "success"){
+            alert_toast("Item successfully remove",'success', 'center');
+            btn.closest('tr').fadeOut();
+            end_loader();
+        }
+        else{
+            alert_toast("Something went wrong",'error', 'top');
+            end_loader();
+        }
+    
+    },
+    error:function(resp){
+        console.log(resp.responseText);
+        alert_toast("Something went wrong",'error', 'top');
+        end_loader();
+    }
+})
+})
+
+$("#btn_submit").click(function(){
+  start_loader();
+  if($(".total").val()==0){
+    alert_toast("Your POS is empty!",'error', 'top');
+    end_loader();
+    return
+  }
+    
+    var btn = $(this);
+    $.ajax({
+    url:"submit_sale/"+ $(this).attr('data-id'),
+    type: 'GET',
+    dataType: 'json',
+    success:function(resp){
+        if(resp.msg == "success"){
+            alert_toast("Transaction successful",'success', 'center');
+            end_loader();
+            location.reload();
+        }
+        else{
+            alert_toast("Something went wrong",'error', 'top');
+            end_loader();
+        }
+    
+    },
+    error:function(resp){
+        console.log(resp.responseText);
+        alert_toast("Something went wrong",'error', 'top');
+        end_loader();
+    }
+})
+})
+
+$('#addCart_form').submit(function(e){
+        e.preventDefault();
+        start_loader();
+        if($("#med_name").val()==""){
+        alert_toast("Medicine name can't be empty",'error', 'top');
+        end_loader();
+        return;
+        }
+        if( parseInt($("#quantity").val())<1){
+        alert_toast("Quantity should not be less than 1",'error', 'top');
+        end_loader();
+        return;
+    }
+        $.ajax({
+        url:"add_sale",
+        data:new FormData($(this)[0]),
+        cache: false,
+        contentType: false,
+        processData: false,
+        method: 'POST',
+        type: 'POST',
+        dataType: 'json',
+        error:err=>{
+        console.log(err.responseText);
+        alert_toast("Something went wrong",'error', 'top');
+        end_loader();
+                },
+        success:function(resp){
+        if(resp.msg=='success'){
+            end_loader();
+            setTimeout(function(){
+            alert_toast("Medicine Added Successful",'success', 'center');
+            this.location.reload();
+        }, 1000); 
+        } 
+        else if(resp.msg=='exist'){
+            alert_toast("Medicine already exist",'error', 'top');
+            end_loader();
+        }      
+        else{
+            alert_toast("Failed to add medicine",'error', 'top');
+            end_loader();
+        }
+        }
+    })
+});
+    
+</script>
+{% endblock %}

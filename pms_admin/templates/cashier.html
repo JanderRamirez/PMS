@@ -1,0 +1,481 @@
+{% extends "master.html" %}
+{% block content %}
+<!-- page content -->
+<div class="right_col" role="main">
+  <div class="">
+    <div class="page-title">
+      <div class="title_left">
+        <h3><i class="fa fa-user"></i> Cashier</h3>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12  ">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>List of Cashiers</h2>
+            <ul class="nav navbar-right panel_toolbox">
+            <a href="add-cashier.php" class="btn btn-sm btn-info text-white" data-toggle="modal" data-target="#addCas"><i class="fa fa-user-plus"></i> Add Cashier</a>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <table id="datatable" class="table table-striped table-bordered" style="width:100%">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Full Name</th>
+                  <th>Contact</th>
+                  <th>Email</th>
+                  <th>Account Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+
+              <tbody>
+                {% for user in cashiers %}
+                <tr>
+                  <td>{{ user.username }}</td>
+                  <td>{{ user.f_name }} {{ user.m_name }} {{ user.l_name }} </td>
+                  <td>{{ user.phone }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    {% if user.status == 1 %}<span class="btn btn-sm btn-success text-white">active</span>  
+                    {% else %}<span class="btn btn-sm btn-danger text-white">inactive</span>{% endif %}</td>
+                  <td>
+                      <button class="btn btn-sm btn-success text-white btnedit" data-id="{{ user.id }}"><i class="fa fa-edit"></i> edit</button>
+                      <!-- <a class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a> -->
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modal %}
+<!-- Modal Add  -->
+<div class="modal fade" id="addCas" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content rounded-0 ">
+            <div class="modal-body ">
+              <div class="" role="main">
+                <div class="">
+                  <div class="page-title">
+                    <div class="title_left">
+                      <h3><i class="fa fa-user-plus"></i> Add Cashier</h3>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12  ">
+                      <div class="x_panel">
+                        <div class="x_title">
+                          <h2>Cashier Information</h2>
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                        <form id="addCas_form" data-parsley-validate class="form-horizontal form-label-left">
+                        {% csrf_token %}
+                        <div class="item form-group">
+                        <div class="col-md-8 col-sm-8">
+                          <label><i class="fa fa-user"></i> Cashier Information</label>
+                        </div>
+                      </div>
+                      <div class="item form-group">
+                        <div class="col-md-4 col-sm-4">
+                          <input type="text" class="form-control has-feedback-left" name = "f_name" placeholder="First Name" required>
+                          <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                          <input type="text" class="form-control has-feedback-left" name = "m_name" placeholder="Middle Name" required>
+                          <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                          <input type="text" class="form-control has-feedback-left" name = "l_name" placeholder="Last Name" required>
+                          <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                      </div>
+                      <div class="item form-group">
+                        <div class="col-md-6 col-sm-6">
+                          <input type="text" class="form-control has-feedback-left" name = "phone" placeholder="ex. 09809879797" required>
+                          <span class="fa fa-phone form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                          <input type="email" class="form-control has-feedback-left" name = "email" placeholder="ex. supplier@gmail.com" required>
+                          <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                      </div>
+                      <div class="item form-group">
+                        <div class="col-md-8 col-sm-8">
+                          <label><i class="fa fa-key"></i> Account Information</label>
+                        </div>
+                      </div>
+                      <div class="item form-group">
+                        <div class="col-md-6 col-sm-6">
+                          <input type="text" class="form-control has-feedback-left" name = "username" placeholder="Username" required>
+                          <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                        </div> 
+                        <div class="col-md-6 col-sm-6">
+                          <input type="password" class="form-control has-feedback-left" name = "password" placeholder="************" required>
+                          <span class="fa fa-lock form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                      </div>
+                      <div class="item form-group">
+                        <div class="col-md-12 col-sm-12 d-flex justify-content-end">
+                            <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                      </div>
+                        </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal Update  -->
+<div class="modal fade" id="editMed" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content rounded-0 ">
+            <div class="modal-body ">
+              <div class="" role="main">
+                <div class="">
+                  <div class="page-title">
+                    <div class="title_left">
+                      <h3><i class="fa fa-user-plus"></i> Add Cashier</h3>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12  ">
+                      <div class="x_panel">
+                        <div class="x_title">
+                          <h2>Cashier Information</h2>
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                        <form id="editCas_form" data-parsley-validate class="form-horizontal form-label-left">
+                        {% csrf_token %}
+                        <div class="item form-group">
+                        <div class="col-md-8 col-sm-8">
+                          <label><i class="fa fa-user"></i> Cashier Information</label>
+                        </div>
+                      </div>
+                      <div class="item form-group">
+                        <div class="col-md-4 col-sm-4">
+                          <input type="text" class="form-control has-feedback-left" name = "id" id ="m_id" placeholder="First Name" hidden>
+                          <input type="text" class="form-control has-feedback-left" name = "f_name" id ="m_fname" placeholder="First Name" required>
+                          <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                          <input type="text" class="form-control has-feedback-left" name = "m_name" id ="m_mname" placeholder="Middle Name" required>
+                          <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                          <input type="text" class="form-control has-feedback-left" name = "l_name" id ="m_lname" placeholder="Last Name" required>
+                          <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                      </div>
+                      <div class="item form-group">
+                        <div class="col-md-6 col-sm-6">
+                          <input type="text" class="form-control has-feedback-left" name = "phone" id ="m_phone" placeholder="ex. 09809879797" required>
+                          <span class="fa fa-phone form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                          <input type="email" class="form-control has-feedback-left" name = "email" id ="m_email" placeholder="ex. supplier@gmail.com" required>
+                          <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                      </div>
+                      <div class="item form-group mb-0">
+                        <div class="col-md-6 col-sm-6 mb-1">
+                          <label><i class="fa fa-key"></i> Account Information</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6 mb-0 pt-2 text-danger"><small><i>*Please leave this field blank if you don't want to change password.</i></small></div>
+                      </div>
+                      <div class="item form-group">
+                        <div class="col-md-6 col-sm-6">
+                          <input type="text" class="form-control has-feedback-left" name = "username" id ="m_username" placeholder="Username" required>
+                          <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                        </div> 
+                        <div class="col-md-6 col-sm-6">
+                          <input type="password" class="form-control has-feedback-left" name = "password" id ="m_password" placeholder="************">
+                          <span class="fa fa-lock form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                      </div>
+                      <div class="item form-group">
+                        <div class="col-md-6 col-sm-6">
+                         
+
+                      <select class="form-control pl-5" required id="m_select" name = "status">
+                          <option id="activate" value="1">Activate</option>
+                          <option id = "deactivate" value="2">Deactivate</option>
+                      </select>
+                      <span class="fa fa-industry form-control-feedback left" aria-hidden="true"></span>
+                    </div>
+                    
+                  </div>
+                      <div class="item form-group">
+                        <div class="col-md-12 col-sm-12 d-flex justify-content-end">
+                            <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                      </div>
+                        </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal Add Stock  -->
+<div class="modal fade" id="editStock" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content rounded-0 ">
+            <div class="modal-body ">
+                <div class="" role="main">
+                    <div class="">
+                      <div class="page-title">
+                        <div class="title_left">
+                          <h4><i class="fa fa-medkit"></i> Add Stocks</h3>
+                        </div>
+                      </div>
+          
+                      <div class="clearfix"></div>
+          
+                          <div class="x_panel">
+                            <div class="x_title">
+                              <h2>Medicine Information</h2>
+                              <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                            <form id="addStock_form" data-parsley-validate class="form-horizontal form-label-left">
+                                {%csrf_token %}
+                            <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                              <input type="text" class="form-control has-feedback-left" name = "code" id = "a_code" placeholder="Medicine Code" readonly>
+                              <span class="fa fa-medkit form-control-feedback left" aria-hidden="true"></span>
+                            </div>
+                            <div class="col-md-8 col-sm-8" required>
+                              <input type="text" class="form-control has-feedback-left" placeholder="Medicine Name" id = "a_name" name = "name" readonly>
+                              <span class="fa fa-medkit form-control-feedback left" aria-hidden="true"></span>
+                            </div><br><br><br>
+                            <div class="col-md-4 col-sm-4 mb-0">
+                                <label for="">Quantity Left</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 mb-0">
+                                    <label for="">Added Quantity</label>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 mb-0">
+                                        </div>
+                                <div class="col-md-4 col-sm-4">
+                              <input type="text" class="form-control has-feedback-left" name ="quantity" id = "a_quantity" placeholder="Quantity" required readonly>
+                              <span class="fa fa-hourglass-o form-control-feedback left" aria-hidden="true"></span>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <input type="text" class="form-control has-feedback-left" name ="added" id = "n_quantity" placeholder="Quantity" required>
+                                <span class="fa fa-hourglass-o form-control-feedback left" aria-hidden="true"></span>
+                              </div>
+                            <div class="col-md-4 col-sm-4">
+                              <input type="text" class="form-control has-feedback-left" name = "unit"  id = "m_unit" placeholder="Unit" required readonly>
+                              <span class="fa fa-balance-scale form-control-feedback left" aria-hidden="true"></span>
+                            </div><br><br><br>
+                            <div class="col-md-12 col-sm-12 d-flex justify-content-end">
+                                <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </div>
+                            </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+</script>
+{% endblock %}
+
+{% block scripts %}
+        <script>
+            
+    $('#addCas_form').submit(function(e){
+            e.preventDefault();
+            start_loader();
+          $.ajax({
+            url:"add_cas",
+            data:new FormData($(this)[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            dataType: 'json',
+            error:err=>{
+            console.log(err.responseText);
+            alert_toast("Something went wrong",'error', 'top');
+            end_loader();
+                    },
+            success:function(resp){
+            if(resp.msg=='success'){
+                end_loader();
+                setTimeout(function(){
+                alert_toast("Cashier Added Successful",'success', 'center');
+                this.location.reload();
+            }, 1000); 
+            }    
+            else{
+                alert_toast("Failed to add cashier",'error', 'top');
+                end_loader();
+            }
+            }
+        })
+        });
+    
+        $(".btnaddstock").click(function(){
+            start_loader();
+            $.ajax({
+            url:"get_med/" +  $(this).attr("data-id"),
+            type: 'GET',
+            dataType: 'json',
+            success:function(resp){
+            $("#a_code").val(resp.code);
+            $("#a_name").val(resp.name);
+            $("#a_quantity").val(resp.quantity);
+            $("#a_unit").val(resp.unit);
+            end_loader();
+            },
+            error:function(resp){
+                alert_toast("Something went wrong",'error', 'top');
+                end_loader();
+            }
+        })
+            $("#editStock").modal("show");
+            end_loader();
+        });
+        
+        $(".btnedit").click(function(){
+            start_loader();
+            $.ajax({
+            url:"get_cas/" +  $(this).attr("data-id"),
+            type: 'GET',
+            dataType: 'json',
+            success:function(resp){
+            $("#m_id").val(resp.id);
+            $("#m_fname").val(resp.f_name);
+            $("#m_mname").val(resp.m_name);
+            $("#m_lname").val(resp.l_name);
+            $("#m_phone").val(resp.phone);
+            $("#m_email").val(resp.email);
+            $("#m_username").val(resp.username); 
+            $("#m_select option:selected").removeAttr("selected");
+            if(resp.status==1){
+              $("#activate").attr("selected", "selected");
+            }
+            else{
+              $("#deactivate").attr("selected", "selected");
+            }
+              
+            end_loader();
+            },
+            error:function(resp){
+                alert_toast("Something went wrong",'error', 'top');
+                end_loader();
+            }
+        })
+            $("#editMed").modal("show");
+            end_loader();
+        });
+        $('#editCas_form').submit(function(e){
+            e.preventDefault();
+            start_loader();
+          $.ajax({
+            url:"edit_cas",
+            data:new FormData($(this)[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            dataType: 'json',
+            error:err=>{
+            console.log(err.responseText);
+            alert_toast("Somethings went wrong",'error', 'top');
+            end_loader();
+                    },
+            success:function(resp){
+            if(resp.msg=='success'){
+                end_loader();
+                setTimeout(function(){
+                alert_toast("Medicine Updated Successful",'success', 'center');
+                this.location.reload();
+            }, 1000); 
+            }
+            else{
+                alert_toast("Failed to update medicine",'error', 'top');
+                end_loader();
+            }
+            }
+        })
+        });
+        
+
+        $('#addStock_form').submit(function(e){
+          e.preventDefault();
+            start_loader();
+          $.ajax({
+            url:"add_stock",
+            data:new FormData($(this)[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            dataType: 'json',
+            error:err=>{
+            console.log(err.responseText);
+            alert_toast("Somethings went wrong",'error', 'top');
+            end_loader();
+                    },
+            success:function(resp){
+            if(resp.msg=='success'){
+                end_loader();
+                setTimeout(function(){
+                alert_toast("Medicine Added Successful",'success', 'center');
+                this.location.reload();
+            }, 1000); 
+            } 
+            else if(resp.msg=='exist'){
+                alert_toast("Medicine already exist",'error', 'top');
+                end_loader();
+            }      
+            else{
+                alert_toast("Failed to add medicine",'error', 'top');
+                end_loader();
+            }
+            }
+        })
+        })
+        </script>
+{% endblock %}

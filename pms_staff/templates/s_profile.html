@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+.profile-pic {
+  color: transparent;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+.profile-pic input {
+  display: none;
+}
+.profile-pic img {
+  position: absolute;
+  object-fit: cover;
+  width: 165px;
+  height: 165px;
+  box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.35);
+  border-radius: 100px;
+  z-index: 0;
+}
+.profile-pic .-label {
+  cursor: pointer;
+  height: 165px;
+  width: 165px;
+}
+.profile-pic:hover .-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 10000;
+  color: #fafafa;
+  transition: background-color 0.2s ease-in-out;
+  border-radius: 10px;
+  margin-bottom: 0;
+}
+.profile-pic span {
+  display: inline-flex;
+  padding: 0.2em;
+  height: 2em;
+}
+
+</style>
+
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3><i class="fa fa-user"></i> Profile</h3>
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="row">
+        <div class="col-md-12 col-sm-12  ">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Profile Information</h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <div class="col-md-3 col-sm-3  profile_left">
+                <div class="profile_img">
+                  <div id="crop-avatar">
+                    <!-- Current avatar -->
+                    <form id="update-profile-form" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
+                      {% csrf_token %}
+                    <div class="profile-pic">
+                      <label class="-label" for="file">
+                        <span class="fa fa-camera"></span>
+                        <span>Change Image</span>
+                      </label>
+                      <input id="file" type="file"  name = "image" onchange="loadFile(event)"/>
+                      {% load static %}
+                    {% with 'profile/'|add:profile.profile as image_static %} 
+                      <img class="img-responsive avatar-view" src="{% static image_static %}" id = "output" alt="Avatar" style="border-radius:10px">
+                      {% endwith %}
+                    </div>
+                  </div>
+                </div>
+                <h3>{{ profile.f_name }} {{ profile.l_name }}</h3>
+
+                <ul class="list-unstyled user_data">
+                  <li>
+                    <i class="fa fa-user user-profile-icon"></i> Cashier
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-9 col-sm-9  profile_left">
+              
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 label-align"><strong><i class="fa fa-user"></i> Profile Information</strong></label>
+            </div>
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 label-align" >Full Name <span class="required">*</span>
+              </label>
+              <div class="col-md-3 col-sm-3 ">
+                <input type="text" required="required" class="form-control" name = "f_name" placeholder="First Name" value = {{ profile.f_name }}>
+                <input type="text" required="required" class="form-control" name = "id" placeholder="First Name" value = {{ profile.id }} hidden>
+              </div>
+              <div class="col-md-3 col-sm-3 ">
+                <input type="text" required="required" class="form-control" placeholder="Last Name" name = "m_name" value = {{ profile.m_name }}>
+              </div>
+              <div class="col-md-3 col-sm-3 ">
+                <input type="text" required="required" class="form-control" placeholder="Last Name" name = "l_name" value = {{ profile.l_name }}>
+              </div>
+            </div>
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 label-align">Email</label>
+              <div class="col-md-9 col-sm-9 ">
+                <input class="form-control" type="email" placeholder="support@gmail.com" name ="email" value = {{ profile.email }}>
+              </div>
+            </div>
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 label-align">Contact</label>
+              <div class="col-md-9 col-sm-9 ">
+                <input class="form-control" type="text" placeholder="09486087489" name ="phone" value = {{ profile.phone }}>
+              </div>
+            </div>
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 label-align"><strong><i class="fa fa-key"></i> Account Information</strong></label>
+            </div>
+
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 label-align">Username</label>
+              <div class="col-md-9 col-sm-9 ">
+                <input class="form-control" type="text" name = "username" placeholder="Username" value = {{ profile.username }}>
+              </div>
+            </div>
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 label-align">Password</label>
+              <div class="col-md-9 col-sm-9 ">
+                <input class="form-control" type="password" name = "password" placeholder="************">
+              </div>
+            </div>
+            <div class="ln_solid"></div>
+            <div class="item form-group">
+              <div class="col-md-6 col-sm-6 offset-md-3">
+                <button class="btn btn-primary" type="button">Cancel</button>
+                <button type="submit" class="btn btn-success">Submit</button>
+              </div>
+            </div>
+
+            </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+
+{% block scripts %}
+<script>
+
+    $('#update-profile-form').submit(function(e){
+            e.preventDefault();
+            start_loader();
+            setTimeout(function(){
+              
+    }, 1000); 
+          $.ajax({
+                    url:"update_profile",
+                    data:new FormData($(this)[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            dataType: 'json',
+                    error:err=>{console.log(err.responseText);
+              if(err.responseText=='success'){
+                
+                end_loader();
+              alert_toast("Updated Successful",'success', 'center');
+            location.reload();
+              }              
+              else{
+                alert_toast("Incorrect Username or Password",'error', 'top');
+                          end_loader();
+              }
+                        
+                    },
+                    success:function(resp){
+              console.log(resp.responseText);
+              console.log("resp")
+              alert_toast(resp,'success');
+                            end_loader();
+                    }
+                })
+        })
+    
+        var loadFile = function (event) {
+  var image = document.getElementById("output");
+  image.src = URL.createObjectURL(event.target.files[0]);
+};
+      </script>
+{% endblock %}

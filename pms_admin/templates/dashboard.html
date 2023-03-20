@@ -1,0 +1,146 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3><i class="fa fa-dashboard"></i> Dashboard</h3>
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="row">
+        <div class="col-md-12 col-sm-12  ">
+          <div class="x_panel">
+            <div class="x_content">
+            <div class="row">
+              <center>
+              <div class="tile_count">
+                <div class="col-md-4 col-sm-4  tile_stats_count">
+                  <span class="count_top"><i class="fa fa-medkit"></i> Total Medicines</span>
+                  <div class="count">{{ med_count }}</div>
+                </div>
+                <div class="col-md-4 col-sm-4  tile_stats_count">
+                  <span class="count_top"><i class="fa fa-truck"></i> Total Sales</span>
+                  <div class="count">2,315</div>
+                </div>
+                <div class="col-md-4 col-sm-4  tile_stats_count">
+                  <span class="count_top"><i class="fa fa-user"></i> Total Cashier</span>
+                  <div class="count">{{ cas_count }}</div>
+                </div>
+              </div>
+            </center>
+</div>
+            <div class="col-md-6 col-sm-6  ">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Sales Amount</h2>
+              
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <canvas id="mylineChart"></canvas>
+            </div>
+          </div>
+        </div>              
+        <div class="col-md-6 col-sm-6  ">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Top 10 Selling Items</h2>
+              
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content" id = 'med'>
+              <canvas id="mylineChart2"></canvas>
+            </div>
+          </div>
+        </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// $("#med").load(window.location.href + " #med" );
+            word = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            month = [];
+            sale = [];
+            $.ajax({
+            url:"get_monthly",
+            type: 'GET',
+            dataType: 'json',
+            success:function(resp){
+              for(let s in resp.sales){
+              month.push(word[resp.sales[s].month-1]);
+              sale.push(resp.sales[s].total)
+              }
+            },
+            error:function(resp){
+                alert_toast("Something went wrong",'error', 'top');
+            }
+        })
+        var e = document.getElementById("mylineChart");
+            new Chart(e, {
+                type: "line",
+                data: {
+                    labels: month,
+                    datasets: [{
+                        label: "Sales Amount",
+                        backgroundColor: "rgba(38, 185, 154, 0.31)",
+                        borderColor: "rgba(38, 185, 154, 0.7)",
+                        pointBorderColor: "rgba(38, 185, 154, 0.7)",
+                        pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
+                        pointHoverBackgroundColor: "#fff",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointBorderWidth: 1,
+                        data: sale
+                    }]
+                }
+            })
+
+  
+            var e = document.getElementById("mylineChart2");
+            med = [];
+            total = [];
+            $.ajax({
+            url:"get_bymed",
+            type: 'GET',
+            dataType: 'json',
+            success:function(resp){
+              for(let s in resp.sales){
+              med.push(resp.sales[s].name);
+              total.push(resp.sales[s].total)
+              }
+            },
+            error:function(resp){
+                alert_toast("Something went wrong",'error', 'top');
+            }
+        }) 
+            new Chart(e, {
+                type: "bar",
+                data: {
+                    labels: med,
+                    datasets: [{
+                        label: "Sales Amount",
+                        backgroundColor: "rgba(38, 185, 154, 0.31)",
+                        borderColor: "rgba(38, 185, 154, 0.7)",
+                        pointBorderColor: "rgba(38, 185, 154, 0.7)",
+                        pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
+                        pointHoverBackgroundColor: "#fff",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointBorderWidth: 1,
+                        data: total
+                    }]
+                }
+            })
+            
+</script>
+{% endblock %}
